@@ -39,10 +39,9 @@ class Leaf {
     fill(255); // Fills the point with a color (white: 255 255 255)
     noStroke(); // Stroke is the outline of a drawing
     ellipse(pos.x, pos.y, 4, 4); // draws an ellipse as (pos.x, pos.y) with "x-radius" 2
-				 // and "y-radius" 2
+         // and "y-radius" 2
     if( System.currentTimeMillis() - creationTime >= 5000 ) {  // NEW check for expiration after show
        shouldExpire = true; 
     }
   }
-  
 }

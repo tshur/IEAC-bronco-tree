@@ -108,6 +108,7 @@ class Tree {
     for (Branch b : branches) { // display all branches
       if (b.parent != null) {
         stroke(255);
+        strokeWeight(3);
         line(b.pos.x, b.pos.y, b.parent.pos.x, b.parent.pos.y);
       }
     }
