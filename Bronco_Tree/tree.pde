@@ -17,7 +17,7 @@ class Tree {
     //              a trunk is extended from the bottom until it is within max_dist
     //              of any leaf (essentially, this moves within the vicinity of leaves)
 
-    for (int i = 0; i < 2000; i++) {
+    for (int i = 0; i < 2000; i++) {  // should be 2000 for OG Tree
       leaves.add(new Leaf());
     }
     
@@ -83,7 +83,7 @@ class Tree {
     // check all leaves
     for (int i = leaves.size()-1; i >= 0; i--) {
       // if a leaf is reached by a branch, remove it from further consideration
-      if (leaves.get(i).reached) {
+      if (leaves.get(i).reached || leaves.get(i).shouldExpire ) {  // added expiration to removal check
         leaves.remove(i);
       }
     }
@@ -103,7 +103,7 @@ class Tree {
 
   void show() {
     for (Leaf l : leaves) { // display all leaves
-      l.show();
+      l.show(); // LEAF VISIBILITY
     }
     for (Branch b : branches) { // display all branches
       if (b.parent != null) {
@@ -111,5 +111,9 @@ class Tree {
         line(b.pos.x, b.pos.y, b.parent.pos.x, b.parent.pos.y);
       }
     }
+  }
+  
+  void newLeaf(PVector pos) {
+    leaves.add(new Leaf(pos));
   }
 }
