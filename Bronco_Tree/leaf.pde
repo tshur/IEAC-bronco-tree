@@ -18,6 +18,11 @@ class Leaf {
 
     //pos = new PVector(random(10, width-10), random(10, height-40));
   }
+  
+  Leaf(PVector pos_) {
+    // Constructor creates a leaf with given position
+    pos = pos_;
+  }
 
   void reached() {
     reached = true;
