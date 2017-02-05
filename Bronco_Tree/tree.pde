@@ -105,11 +105,34 @@ class Tree {
     for (Leaf l : leaves) { // display all leaves
       l.show(); // LEAF VISIBILITY
     }
-    for (Branch b : branches) { // display all branches
+    float GROW_RATE = 0.001;
+    // float EXP_RATE = 3;
+    for (int i = branches.size() - 1; i >= 0; i--) { // display all branches
+      Branch b = branches.get(i);
       if (b.parent != null) {
-        stroke(255);
-        strokeWeight(3);
+        // slow method to compute so many squares and square roots
+        if (b.num_children == 0) { // reset terminal branch radius
+          b.radius = 0.1;
+        }
+        
+        if (b.parent.num_children >= 2) {
+          b.parent.radius += b.radius * 0.8;
+          // b.parent.radius += Math.pow(b.radius, EXP_RATE);
+        } else {
+          b.parent.radius = b.radius + GROW_RATE; 
+        }
+        //stroke(255);
+        //strokeWeight((float)Math.pow(b.radius, 1/2.4) * 2.0);
+        //line(b.pos.x, b.pos.y, b.parent.pos.x, b.parent.pos.y);
+      }
+    }
+    stroke(255);
+    for (Branch b : branches) {
+      if (b.parent != null) {
+        // strokeWeight((float)Math.pow(b.radius, 1/EXP_RATE) * 2.0);
+        strokeWeight(b.radius * 2.0);
         line(b.pos.x, b.pos.y, b.parent.pos.x, b.parent.pos.y);
+        b.radius = 0;
       }
     }
   }

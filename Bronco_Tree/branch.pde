@@ -14,6 +14,8 @@ class Branch {
   int count = 0;
   PVector saveDir;
   float len = 5;
+  int num_children = 0; // keep track of the number of children per branch segment
+  float radius = 0;
 
   Branch(PVector v, PVector d) {
     // Constructor for the root branch
@@ -27,6 +29,7 @@ class Branch {
   Branch(Branch p) {
     // Constructor for new branches; pass in parent branch as an argument
     parent = p;
+    p.num_children++;
     pos = parent.next();
     dir = parent.dir.copy();
     saveDir = dir.copy();

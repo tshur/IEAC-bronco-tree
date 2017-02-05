@@ -5,7 +5,7 @@
 
 Tree tree;
 float min_dist = 10; // when a leaf is within this distance it is popped
-float max_dist = 30; // leaves outside this distance are ignored
+float max_dist = 50; // leaves outside this distance are ignored
 
 void setup() {
   // Function: setup
