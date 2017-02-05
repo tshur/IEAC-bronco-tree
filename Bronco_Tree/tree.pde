@@ -22,7 +22,7 @@ class Tree {
     }
     
     // Creating the root branch with dir pointing straight upwards
-    Branch root = new Branch(new PVector(width/2, height), new PVector(0, -1));
+    Branch root = new Branch(new PVector(width/2, height + 3), new PVector(0, -1));
     branches.add(root);
     Branch current = new Branch(root);
 
@@ -75,6 +75,7 @@ class Tree {
       }
       if (closest != null) { // if a leaf has a closest branch
         closestDir.normalize(); // normal vector in direction of leaf
+        closestDir.mult(random(0.8, 1.2));
         closest.dir.add(closestDir); // add direction of leaf to branch dir
         closest.count++; // increment count (holds the number of closest leaves)
       }
@@ -105,34 +106,43 @@ class Tree {
     for (Leaf l : leaves) { // display all leaves
       l.show(); // LEAF VISIBILITY
     }
-    float GROW_RATE = 0.001;
-    // float EXP_RATE = 3;
-    for (int i = branches.size() - 1; i >= 0; i--) { // display all branches
+    float TIP_RADIUS = 0.2; // radius of the terminal branches
+    float GROW_RATE = 0.01; // growth rate as a single branch extends
+    float EXP_RATE = 2.2;   // exponent for branch merge calculation (typically between 2-3)
+    
+    // TO BE MOVED INTO A SEPARATE FUNCTION TO CALCULATE BRANCH RADII
+    // loop backwards to ensure child branches come before parent branches
+    for (int i = branches.size() - 1; i >= 0; i--) { // calculate branch thicknesses
       Branch b = branches.get(i);
       if (b.parent != null) {
         // slow method to compute so many squares and square roots
         if (b.num_children == 0) { // reset terminal branch radius
-          b.radius = 0.1;
+          b.radius = TIP_RADIUS;
+        } else if (b.num_children >= 2) { // root parent radius to get desired radius
+          b.radius = (float) Math.pow(b.radius, 1/EXP_RATE);
         }
         
-        if (b.parent.num_children >= 2) {
-          b.parent.radius += b.radius * 0.8;
-          // b.parent.radius += Math.pow(b.radius, EXP_RATE);
+        if (b.parent.num_children >= 2) { // signals a parent branch
+          // b.parent.radius += b.radius * 0.9;
+          b.parent.radius += Math.pow(b.radius, EXP_RATE); // add powers of children radii to parent
         } else {
-          b.parent.radius = b.radius + GROW_RATE; 
+          b.parent.radius = b.radius + GROW_RATE; // linear growth along a single branch
         }
+        
+        
         //stroke(255);
         //strokeWeight((float)Math.pow(b.radius, 1/2.4) * 2.0);
         //line(b.pos.x, b.pos.y, b.parent.pos.x, b.parent.pos.y);
       }
     }
-    stroke(255);
+    stroke(50,39,25);
+    // draw branches
     for (Branch b : branches) {
       if (b.parent != null) {
-        // strokeWeight((float)Math.pow(b.radius, 1/EXP_RATE) * 2.0);
-        strokeWeight(b.radius * 2.0);
+        // strokeWeight((float)Math.pow(b.radius, 1/(EXP_RATE + 0.5)) * 2.0);
+        strokeWeight(b.radius * 2);
         line(b.pos.x, b.pos.y, b.parent.pos.x, b.parent.pos.y);
-        b.radius = 0;
+        b.radius = 0; // reset branch radii to zero for next calculation
       }
     }
   }

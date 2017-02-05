@@ -19,7 +19,7 @@ void draw() {
   // Function: draw
   // Description: draw() runs one time every frame
 
-  background(51); // Draw a gray (RGB: 51 51 51) background (overwrites sketch)
+  background(230); // Draw a gray (RGB: 230 230 230) background (overwrites sketch)
   tree.show();
   tree.grow();
 }

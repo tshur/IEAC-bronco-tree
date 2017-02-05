@@ -18,6 +18,7 @@ class Leaf {
     pos.mult(random(width/2));
     pos.x += width/2;
     pos.y += 2.0/5*height;
+    pos.y *= 0.9;
     creationTime = System.currentTimeMillis(); // NEW creation time
     //pos = new PVector(random(10, width-10), random(10, height-40));
   }
