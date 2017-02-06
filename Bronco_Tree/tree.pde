@@ -17,7 +17,7 @@ class Tree {
     //              a trunk is extended from the bottom until it is within max_dist
     //              of any leaf (essentially, this moves within the vicinity of leaves)
 
-    for (int i = 0; i < 2000; i++) {  // should be 2000 for OG Tree
+    for (int i = 0; i < 1500; i++) {  // should be 2000 for OG Tree
       leaves.add(new Leaf());
     }
     
@@ -61,6 +61,7 @@ class Tree {
         float d = dir.mag(); // d is the distance between the leaf and branch
         if (d < min_dist) { // a branch has reached the leaf
           l.reached();
+          l.show();
           closest = null;
           break;
         } else if (d > max_dist) { // disregard branches that are too far away

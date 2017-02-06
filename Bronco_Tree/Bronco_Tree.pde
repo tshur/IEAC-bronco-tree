@@ -12,6 +12,7 @@ void setup() {
   // Description: setup() runs one time when the sketch is initialized
 
   size(600, 600); // creates the canvas to be width=600px by height=600px
+  background(230);
   tree = new Tree();
 }
 
@@ -19,7 +20,7 @@ void draw() {
   // Function: draw
   // Description: draw() runs one time every frame
 
-  background(230); // Draw a gray (RGB: 230 230 230) background (overwrites sketch)
+  //background(230); // Draw a gray (RGB: 230 230 230) background (overwrites sketch)
   tree.show();
   tree.grow();
 }
