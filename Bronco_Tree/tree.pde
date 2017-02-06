@@ -17,7 +17,7 @@ class Tree {
     //              a trunk is extended from the bottom until it is within max_dist
     //              of any leaf (essentially, this moves within the vicinity of leaves)
 
-    for (int i = 0; i < 10; i++) {  // should be 2000 for OG Tree
+    for (int i = 0; i < 100; i++) {  // should be 2000 for OG Tree
       leaves.add(new Leaf());
     }
     

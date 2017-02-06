@@ -12,18 +12,21 @@ void setup() {
   // Function: setup
   // Description: setup() runs one time when the sketch is initialized
 
-  size(600, 600); // creates the canvas to be width=600px by height=600px
+  size(600, 600, P2D); // creates the canvas to be width=600px by height=600px
+  smooth(4); // smooth(level) is level-x anti-aliasing. Default for P2D is 2x. noSmooth() turns off
+  
   background(255);
   tree = new Tree();
-  // blossom = loadImage("http://www.emoji.co.uk/files/twitter-emojis/animals-nature-twitter/10730-cherry-blossom.png");
-  // blossom = loadImage("https://s-media-cache-ak0.pinimg.com/564x/3c/75/31/3c753154d2d0d9472d519ddb0cfffe45.jpg");
-  blossom = loadImage("cherry-blossom2.png");
+   blossom = loadImage("http://www.emoji.co.uk/files/twitter-emojis/animals-nature-twitter/10730-cherry-blossom.png");
+  // blossom = loadImage("cherry-blossom2.png");
   imageMode(CENTER); // images are drawn from the center
 }
 
 void draw() {
   // Function: draw
   // Description: draw() runs one time every frame
+
+  surface.setTitle(int(frameRate) + " fps");
 
   //background(230); // Draw a gray (RGB: 230 230 230) background (overwrites sketch)
   tree.show();

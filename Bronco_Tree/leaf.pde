@@ -9,9 +9,10 @@ class Leaf {
   PVector pos;
   boolean reached = false; // has this leaf been reached by a branch yet
   boolean bloomed = false;
-  boolean bad_leaf = (random(1) < 0.65); // bad_leaves do not grow after they are reached
+  boolean bad_leaf = (random(1) < 0.6); // bad_leaves do not grow after they are reached
   float radius = 1;
-  float BLOOM_RADIUS = random(5, 10);
+  float rotation = random(0, HALF_PI);
+  float BLOOM_RADIUS = random(6, 12);
   color col = color(255);
   
   boolean shouldExpire = false;     // NEW
@@ -52,7 +53,7 @@ class Leaf {
       // PETAL DRAWING
       pushMatrix(); // stores the current drawing frame
       translate(pos.x, pos.y);
-      rotate(random(0, PI / 2));
+      rotate(rotation);
       image(blossom, 0, 0, radius * 2, radius * 2);
       //ellipse(-radius, 0, radius * 2, radius); // left
       //ellipse( radius, 0, radius * 2, radius); // right
