@@ -1,3 +1,4 @@
+// Adapted from:
 // Coding Rainbow
 // Daniel Shiffman
 // http://patreon.com/codingtrain
@@ -7,6 +8,9 @@ Tree tree;
 float min_dist = 10; // when a leaf is within this distance it is popped
 float max_dist = 50; // leaves outside this distance are ignored
 PImage blossom; // image for blossom
+PImage branch_img;
+
+color BRANCH_BROWN = color(50,39,25);
 
 void setup() {
   // Function: setup
@@ -17,9 +21,16 @@ void setup() {
   
   background(255);
   tree = new Tree();
-   blossom = loadImage("http://www.emoji.co.uk/files/twitter-emojis/animals-nature-twitter/10730-cherry-blossom.png");
+  
+  blossom = loadImage("http://www.emoji.co.uk/files/twitter-emojis/animals-nature-twitter/10730-cherry-blossom.png");
   // blossom = loadImage("cherry-blossom2.png");
+  
+  // branch_img = loadImage("http://2.bp.blogspot.com/-cgMIsh6MNho/UOsCYA7Xq1I/AAAAAAAAAp0/d7ZVbXA6XHU/s1600/Oak_Bark.jpg");
+  branch_img = loadImage("http://us.123rf.com/450wm/dollapoom/dollapoom1505/dollapoom150500099/40326226-dark-tree-bark-texture.jpg?ver=6");
+  // branch_img = loadImage("dark_bark_texture.jpg");
+  
   imageMode(CENTER); // images are drawn from the center
+  rectMode(CENTER);
 }
 
 void draw() {
@@ -33,7 +44,7 @@ void draw() {
   tree.grow();
 }
 
-int distance = 40;
+int distance = 60; //default 40
 void mousePressed() {
   // Function: mousePressed
   // Description: mousePressed() runs when the mouse button is clicked down. Note:
@@ -45,7 +56,7 @@ void mousePressed() {
 }
 
 void mouseDragged() {
-  int timeframe = 5;
+  int timeframe = 4; // default 5
   // Function: mouseDragged
   // Description: mouseDragged() loops while the mouse is held down and moving. Holding
   //              the mouse button down in one place will not loop this function.

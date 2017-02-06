@@ -17,9 +17,12 @@ class Tree {
     //              a trunk is extended from the bottom until it is within max_dist
     //              of any leaf (essentially, this moves within the vicinity of leaves)
 
-    for (int i = 0; i < 100; i++) {  // should be 2000 for OG Tree
+    for (int i = 0; i < 1000; i++) {  // should be 2000 for OG Tree
       leaves.add(new Leaf());
     }
+    
+    // for single-leaf tests
+    // leaves.add(new Leaf(new PVector(width/2, 0)));
     
     // Creating the root branch with dir pointing straight upwards
     Branch root = new Branch(new PVector(width/2, height + 5), new PVector(0, -1));
@@ -112,11 +115,23 @@ class Tree {
     for (Leaf l : leaves) { // display all leaves
       l.show(); // LEAF VISIBILITY
     }
-    float TIP_RADIUS = 0.2; // radius of the terminal branches
-    float GROW_RATE = 0.015; // growth rate as a single branch extends
-    float EXP_RATE = 2;   // exponent for branch merge calculation (typically between 2-3)
     
-    // TO BE MOVED INTO A SEPARATE FUNCTION TO CALCULATE BRANCH RADII
+    // update the radius of each branch; function implementation below
+    updateBranchThickness(branches);
+    
+    for (Branch b : branches) {
+      if (b.parent != null) {
+        b.show();
+        b.radius = 0; // reset branch radii to zero for next calculation
+      }
+    }
+  }
+  
+  void updateBranchThickness(ArrayList<Branch> branches) {
+    float TIP_RADIUS = 0.8; // radius of the terminal branches
+    float GROW_RATE = 0.015; // growth rate as a single branch extends
+    float EXP_RATE = 2.5;   // exponent for branch merge calculation (typically between 2-3)
+
     // loop backwards to ensure child branches come before parent branches
     for (int i = branches.size() - 1; i >= 0; i--) { // calculate branch thicknesses
       Branch b = branches.get(i);
@@ -125,7 +140,7 @@ class Tree {
         if (b.num_children == 0) { // reset terminal branch radius
           b.radius = TIP_RADIUS;
         } else if (b.num_children >= 2) { // root parent radius to get desired radius
-          b.radius = (float) Math.pow(b.radius, 1/EXP_RATE);
+          b.radius = (float) Math.pow(b.radius, 1/(EXP_RATE));
         }
         
         if (b.parent.num_children >= 2) { // signals a parent branch
@@ -141,26 +156,7 @@ class Tree {
         //line(b.pos.x, b.pos.y, b.parent.pos.x, b.parent.pos.y);
       }
     }
-    // stroke(50,39,25);
-    noStroke();
-    fill(50, 39, 25);
-    // draw branches
-    for (Branch b : branches) {
-      if (b.parent != null) {
-        // strokeWeight((float)Math.pow(b.radius, 1/(EXP_RATE + 0.5)) * 2.0);
-        //strokeWeight(b.radius * 2);
-        //line(b.pos.x, b.pos.y, b.parent.pos.x, b.parent.pos.y);
-        rectMode(CENTER);
-        pushMatrix();
-        //translate(b.pos.x + (b.dir.x * b.len * 0.5), b.pos.y + (b.dir.y * b.len * 0.5));
-        translate(b.pos.x, b.pos.y);
-        rotate(b.saveDir.heading() - HALF_PI);
-        rect(0, 0, b.radius * 2, b.len + b.radius);
-        popMatrix();
-        
-        b.radius = 0; // reset branch radii to zero for next calculation
-      }
-    }
+   
   }
   
   void newLeaf(PVector pos) {
