@@ -6,14 +6,19 @@
 Tree tree;
 float min_dist = 10; // when a leaf is within this distance it is popped
 float max_dist = 50; // leaves outside this distance are ignored
+PImage blossom; // image for blossom
 
 void setup() {
   // Function: setup
   // Description: setup() runs one time when the sketch is initialized
 
   size(600, 600); // creates the canvas to be width=600px by height=600px
-  background(230);
+  background(255);
   tree = new Tree();
+  // blossom = loadImage("http://www.emoji.co.uk/files/twitter-emojis/animals-nature-twitter/10730-cherry-blossom.png");
+  // blossom = loadImage("https://s-media-cache-ak0.pinimg.com/564x/3c/75/31/3c753154d2d0d9472d519ddb0cfffe45.jpg");
+  blossom = loadImage("cherry-blossom2.png");
+  imageMode(CENTER); // images are drawn from the center
 }
 
 void draw() {

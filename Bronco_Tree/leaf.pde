@@ -8,7 +8,10 @@ class Leaf {
   // Description: A leaf is essentially a point; it is defined by a position vector
   PVector pos;
   boolean reached = false; // has this leaf been reached by a branch yet
+  boolean bloomed = false;
+  boolean bad_leaf = (random(1) < 0.65); // bad_leaves do not grow after they are reached
   float radius = 1;
+  float BLOOM_RADIUS = random(5, 10);
   color col = color(255);
   
   boolean shouldExpire = false;     // NEW
@@ -32,19 +35,35 @@ class Leaf {
   }
 
   void reached() {
+    reached = true;
     grow();
-    if (radius >= 5)
-      reached = true;
+    if (radius >= BLOOM_RADIUS)
+      bloomed = true;
   }
 
   void show() {
     // Function: show
     // Description: Draws the leaf (point) onto the canvas
 
-    fill(col); // Fills the point with a color (white: 255 255 255)
-    noStroke(); // Stroke is the outline of a drawing
-    ellipse(pos.x, pos.y, radius * 2, radius * 2); // draws an ellipse as (pos.x, pos.y) with "x-radius" 2
-         // and "y-radius" 2
+      // fill(col); // Fills the point with a color (white: 255 255 255)
+      // stroke(color(red(col)*0.8, green(col)*0.8, blue(col)*0.8)); // Stroke is the outline of a drawing
+      // strokeWeight(1);
+   
+      // PETAL DRAWING
+      pushMatrix(); // stores the current drawing frame
+      translate(pos.x, pos.y);
+      rotate(random(0, PI / 2));
+      image(blossom, 0, 0, radius * 2, radius * 2);
+      //ellipse(-radius, 0, radius * 2, radius); // left
+      //ellipse( radius, 0, radius * 2, radius); // right
+      //ellipse(0, -radius, radius, radius * 2); // top
+      //ellipse(0,  radius, radius, radius * 2); // bot
+      popMatrix(); // returns to last pushed drawing frame
+    
+      //fill(253, 240, 43);
+      //noStroke();
+      //ellipse(pos.x, pos.y, radius / 2, radius / 2);
+    
     if( System.currentTimeMillis() - creationTime >= 5000 ) {  // NEW check for expiration after show
        shouldExpire = true; 
     }
@@ -53,6 +72,6 @@ class Leaf {
   void grow() {
     if (col == color(255))
       col = color(255, 102, 204);
-    radius += 1;
+    radius += BLOOM_RADIUS / 30.0;
   }
 }

@@ -13,7 +13,7 @@ class Branch {
   PVector dir;
   int count = 0;
   PVector saveDir;
-  float len = 5;
+  float len = 4;
   int num_children = 0; // keep track of the number of children per branch segment
   float radius = 0;
 
