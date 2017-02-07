@@ -39,7 +39,7 @@ void draw() {
 
   surface.setTitle(int(frameRate) + " fps");
 
-  //background(230); // Draw a gray (RGB: 230 230 230) background (overwrites sketch)
+  background(255);// was 230 // Draw a gray (RGB: 230 230 230) background (overwrites sketch)
   tree.show();
   tree.grow();
 }

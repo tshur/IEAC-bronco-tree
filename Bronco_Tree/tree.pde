@@ -10,6 +10,7 @@ class Tree {
 
   ArrayList<Branch> branches = new ArrayList<Branch>();
   ArrayList<Leaf> leaves = new ArrayList<Leaf>();
+  ArrayList<Leaf> blossoms = new ArrayList<Leaf>();
 
   Tree() {
     // Constructor: Tree
@@ -94,6 +95,9 @@ class Tree {
     for (int i = leaves.size()-1; i >= 0; i--) {
       // if a leaf is reached by a branch, remove it from further consideration
       if (leaves.get(i).bloomed || leaves.get(i).shouldExpire ) {  // added expiration to removal check
+        if ( leaves.get(i).bloomed ) {
+           blossoms.add( leaves.get(i) ); 
+        }
         leaves.remove(i);
       }
     }
@@ -115,6 +119,12 @@ class Tree {
     for (Leaf l : leaves) { // display all leaves
       l.show(); // LEAF VISIBILITY
     }
+    for( int i = 0; i < blossoms.size(); i++ ) {
+       if ( i%2 == 0 ) {
+          blossoms.get(i).show(); 
+       }
+    }
+    
     
     // update the radius of each branch; function implementation below
     updateBranchThickness(branches);
@@ -122,9 +132,23 @@ class Tree {
     for (Branch b : branches) {
       if (b.parent != null) {
         b.show();
+        //b.radius = 0; // reset branch radii to zero for next calculation
+      }
+    }
+    for (Branch b : branches) {
+      if (b.parent != null) {
+        //b.show();
         b.radius = 0; // reset branch radii to zero for next calculation
       }
     }
+    for( int i = 0; i < blossoms.size(); i++ ) {
+       if ( i%2 == 1 ) {
+          blossoms.get(i).show(); 
+       }
+    }
+    //for (Leaf l : blossoms) { // display all blossoms
+    //  l.show(); // BLOSSOM VISIBILITY
+    //}
   }
   
   void updateBranchThickness(ArrayList<Branch> branches) {
