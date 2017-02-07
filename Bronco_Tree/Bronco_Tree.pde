@@ -16,7 +16,7 @@ void setup() {
   // Function: setup
   // Description: setup() runs one time when the sketch is initialized
 
-  size(600, 600, P2D); // can also use JAVA2D renderer (I believe JAVA2D is higher resolution, slightly slower, more supported).
+  size(600, 600, P2D); // creates the canvas to be width=600px by height=600px
   smooth(4); // smooth(level) is level-x anti-aliasing. Default for P2D is 2x. noSmooth() turns off
   
   background(255);
