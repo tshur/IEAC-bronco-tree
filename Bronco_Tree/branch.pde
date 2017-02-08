@@ -3,6 +3,8 @@
 // http://patreon.com/codingtrain
 // Code for: https://youtu.be/kKT0v3qhIQY
 
+float TEXTURE_STEP = 20;
+
 class Branch {
   // Class: Branch
   // Description: A branch has a point position and a reference to a parent branch. New
@@ -13,7 +15,11 @@ class Branch {
   PVector dir;
   int count = 0;
   PVector saveDir;
-  float len = 5;
+  float len = 4;
+  int num_children = 0; // keep track of the number of children per branch segment
+  float radius = 0;
+  
+  float texture_index = 0;
 
   Branch(PVector v, PVector d) {
     // Constructor for the root branch
@@ -27,15 +33,41 @@ class Branch {
   Branch(Branch p) {
     // Constructor for new branches; pass in parent branch as an argument
     parent = p;
+    p.num_children++;
     pos = parent.next();
     dir = parent.dir.copy();
     saveDir = dir.copy();
+    texture_index = (p.texture_index + TEXTURE_STEP) % 290;
   }
 
   void reset() {
     // Resets the branch to it's original state (may be shifted during the algorithm)
     count = 0;
     dir = saveDir.copy();
+  }
+  
+  void show() {
+    // stroke(BRANCH_BROWN);
+    noStroke();
+    fill(BRANCH_BROWN);
+    
+    // strokeWeight((float)Math.pow(b.radius, 1/(EXP_RATE + 0.5)) * 2.0);
+    // strokeWeight(b.radius * 2);
+    // line(b.pos.x, b.pos.y, b.parent.pos.x, b.parent.pos.y);
+    pushMatrix();
+    // translate(b.pos.x + (b.dir.x * b.len * 0.5), b.pos.y + (b.dir.y * b.len * 0.5));
+    // translate(0.5*pos.x + 0.5*parent.pos.x, 0.5*pos.y + 0.5*parent.pos.y);
+    translate(pos.x, pos.y);
+    rotate(saveDir.heading() + PI/2);
+    // rect(0, 0, radius * 2, len);
+    beginShape();
+    texture(branch_img);
+    vertex(-radius, 0, 0, texture_index);
+    vertex( radius, 0, branch_img.width, texture_index);
+    vertex( radius, len, branch_img.width, texture_index + TEXTURE_STEP);
+    vertex(-radius, len, 0, texture_index + TEXTURE_STEP);
+    endShape();
+    popMatrix();
   }
 
   PVector next() {

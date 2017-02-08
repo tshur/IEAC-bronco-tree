@@ -17,12 +17,15 @@ class Tree {
     //              a trunk is extended from the bottom until it is within max_dist
     //              of any leaf (essentially, this moves within the vicinity of leaves)
 
-    for (int i = 0; i < 2000; i++) {
+    for (int i = 0; i < 1000; i++) {  // should be 2000 for OG Tree
       leaves.add(new Leaf());
     }
     
+    // for single-leaf tests
+    // leaves.add(new Leaf(new PVector(width/2, 0)));
+    
     // Creating the root branch with dir pointing straight upwards
-    Branch root = new Branch(new PVector(width/2, height), new PVector(0, -1));
+    Branch root = new Branch(new PVector(width/2, height + 5), new PVector(0, -1));
     branches.add(root);
     Branch current = new Branch(root);
 
@@ -51,7 +54,8 @@ class Tree {
     // Function: grow
     // Description: This function is the heart of the algorithm. grow() looks at each
     // 		    leaf and
-    for (Leaf l : leaves) {
+    for (int i = leaves.size() - 1; i >= 0; i--) {
+      Leaf l = leaves.get(i);
       Branch closest = null; // closest branch to Leaf l
       PVector closestDir = null;
       float record = -1;
@@ -59,8 +63,13 @@ class Tree {
       for (Branch b : branches) {
         PVector dir = PVector.sub(l.pos, b.pos);
         float d = dir.mag(); // d is the distance between the leaf and branch
+        if (b.num_children > 0) // segments inside branches less likely to link to leaves
+          d *= 1.05; // higher the value, the more likely the terminal branches will seek leaves
         if (d < min_dist) { // a branch has reached the leaf
-          l.reached();
+          if (l.bad_leaf)
+            leaves.remove(i);
+          else
+            l.reached();
           closest = null;
           break;
         } else if (d > max_dist) { // disregard branches that are too far away
@@ -75,6 +84,7 @@ class Tree {
       }
       if (closest != null) { // if a leaf has a closest branch
         closestDir.normalize(); // normal vector in direction of leaf
+        closestDir.mult(random(0.8, 1.2));
         closest.dir.add(closestDir); // add direction of leaf to branch dir
         closest.count++; // increment count (holds the number of closest leaves)
       }
@@ -83,7 +93,7 @@ class Tree {
     // check all leaves
     for (int i = leaves.size()-1; i >= 0; i--) {
       // if a leaf is reached by a branch, remove it from further consideration
-      if (leaves.get(i).reached) {
+      if (leaves.get(i).bloomed || leaves.get(i).shouldExpire ) {  // added expiration to removal check
         leaves.remove(i);
       }
     }
@@ -103,15 +113,50 @@ class Tree {
 
   void show() {
     for (Leaf l : leaves) { // display all leaves
-      l.show();
+      l.show(); // LEAF VISIBILITY
     }
-    for (Branch b : branches) { // display all branches
+    
+    // update the radius of each branch; function implementation below
+    updateBranchThickness(branches);
+    
+    for (Branch b : branches) {
       if (b.parent != null) {
-        stroke(255);
-        strokeWeight(3);
-        line(b.pos.x, b.pos.y, b.parent.pos.x, b.parent.pos.y);
+        b.show();
+        b.radius = 0; // reset branch radii to zero for next calculation
       }
     }
+  }
+  
+  void updateBranchThickness(ArrayList<Branch> branches) {
+    float TIP_RADIUS = 0.8; // radius of the terminal branches
+    float GROW_RATE = 0.015; // growth rate as a single branch extends
+    float EXP_RATE = 2.5;   // exponent for branch merge calculation (typically between 2-3)
+
+    // loop backwards to ensure child branches come before parent branches
+    for (int i = branches.size() - 1; i >= 0; i--) { // calculate branch thicknesses
+      Branch b = branches.get(i);
+      if (b.parent != null) {
+        // slow method to compute so many squares and square roots
+        if (b.num_children == 0) { // reset terminal branch radius
+          b.radius = TIP_RADIUS;
+        } else if (b.num_children >= 2) { // root parent radius to get desired radius
+          b.radius = (float) Math.pow(b.radius, 1/(EXP_RATE));
+        }
+        
+        if (b.parent.num_children >= 2) { // signals a parent branch
+          // b.parent.radius += b.radius * 0.9;
+          b.parent.radius += Math.pow(b.radius, EXP_RATE); // add powers of children radii to parent
+        } else {
+          b.parent.radius = b.radius + GROW_RATE; // linear growth along a single branch
+        }
+        
+        
+        //stroke(255);
+        //strokeWeight((float)Math.pow(b.radius, 1/2.4) * 2.0);
+        //line(b.pos.x, b.pos.y, b.parent.pos.x, b.parent.pos.y);
+      }
+    }
+   
   }
   
   void newLeaf(PVector pos) {
