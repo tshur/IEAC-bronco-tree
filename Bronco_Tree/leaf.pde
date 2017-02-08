@@ -11,8 +11,8 @@ class Leaf {
   boolean bloomed = false;
   boolean bad_leaf = (random(1) < 0.6); // bad_leaves do not grow after they are reached
   float radius = 1;
-  float rotation = random(0, HALF_PI);
-  float BLOOM_RADIUS = random(6, 12);
+  float rotation = random(0, HALF_PI); // rotation of the drawn flower
+  float BLOOM_RADIUS = random(6, 12);  // final radius of a bloomed flower
   color col = color(255);
   
   boolean shouldExpire = false;     // NEW
@@ -55,10 +55,6 @@ class Leaf {
       translate(pos.x, pos.y);
       rotate(rotation);
       image(blossom, 0, 0, radius * 2, radius * 2);
-      //ellipse(-radius, 0, radius * 2, radius); // left
-      //ellipse( radius, 0, radius * 2, radius); // right
-      //ellipse(0, -radius, radius, radius * 2); // top
-      //ellipse(0,  radius, radius, radius * 2); // bot
       popMatrix(); // returns to last pushed drawing frame
     
       //fill(253, 240, 43);

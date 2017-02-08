@@ -3,7 +3,7 @@
 // http://patreon.com/codingtrain
 // Code for: https://youtu.be/kKT0v3qhIQY
 
-float TEXTURE_STEP = 20;
+float TEXTURE_STEP = 20; // step to extend a texture across multiple branch segments
 
 class Branch {
   // Class: Branch
@@ -37,7 +37,7 @@ class Branch {
     pos = parent.next();
     dir = parent.dir.copy();
     saveDir = dir.copy();
-    texture_index = (p.texture_index + TEXTURE_STEP) % 290;
+    texture_index = (p.texture_index + TEXTURE_STEP) % 1000;
   }
 
   void reset() {
@@ -47,10 +47,7 @@ class Branch {
   }
   
   void show() {
-    // stroke(BRANCH_BROWN);
     noStroke();
-    fill(BRANCH_BROWN);
-    
     // strokeWeight((float)Math.pow(b.radius, 1/(EXP_RATE + 0.5)) * 2.0);
     // strokeWeight(b.radius * 2);
     // line(b.pos.x, b.pos.y, b.parent.pos.x, b.parent.pos.y);
@@ -62,10 +59,10 @@ class Branch {
     // rect(0, 0, radius * 2, len);
     beginShape();
     texture(branch_img);
-    vertex(-radius, 0, 0, texture_index);
-    vertex( radius, 0, branch_img.width, texture_index);
-    vertex( radius, len, branch_img.width, texture_index + TEXTURE_STEP);
-    vertex(-radius, len, 0, texture_index + TEXTURE_STEP);
+    vertex(-radius, 0, 0, 1000 - texture_index);
+    vertex( radius, 0, branch_img.width, 1000 - texture_index);
+    vertex( radius, len, branch_img.width, 1000 - texture_index - TEXTURE_STEP);
+    vertex(-radius, len, 0, 1000 - texture_index - TEXTURE_STEP);
     endShape();
     popMatrix();
   }

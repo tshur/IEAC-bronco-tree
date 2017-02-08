@@ -37,13 +37,13 @@ class Tree {
     }
   }
 
-  boolean closeEnough(Branch b) {
+  boolean closeEnough(Branch branch) {
     // Function: closeEnough
     // Description: Returns whether or not Branch b is within max_dist of any leaf
 
-    for (Leaf l : leaves) {
-      float d = PVector.dist(b.pos, l.pos);
-      if (d < max_dist) {
+    for (Leaf leaf : leaves) {
+      float distance_to_leaf = PVector.dist(branch.pos, leaf.pos);
+      if (distance_to_leaf < max_dist) {
         return true;
       }
     }
@@ -55,31 +55,31 @@ class Tree {
     // Description: This function is the heart of the algorithm. grow() looks at each
     // 		    leaf and
     for (int i = leaves.size() - 1; i >= 0; i--) {
-      Leaf l = leaves.get(i);
+      Leaf leaf = leaves.get(i);
       Branch closest = null; // closest branch to Leaf l
       PVector closestDir = null;
       float record = -1;
 
-      for (Branch b : branches) {
-        PVector dir = PVector.sub(l.pos, b.pos);
-        float d = dir.mag(); // d is the distance between the leaf and branch
-        if (b.num_children > 0) // segments inside branches less likely to link to leaves
-          d *= 1.05; // higher the value, the more likely the terminal branches will seek leaves
-        if (d < min_dist) { // a branch has reached the leaf
-          if (l.bad_leaf)
+      for (Branch branch : branches) {
+        PVector dir = PVector.sub(leaf.pos, branch.pos);
+        float distance_to_leaf = dir.mag(); // d is the distance between the leaf and branch
+        if (branch.num_children > 0) // segments inside branches less likely to link to leaves
+          distance_to_leaf *= 1.05; // higher the value, the more likely the terminal branches will seek leaves
+        if (distance_to_leaf < min_dist) { // a branch has reached the leaf
+          if (leaf.bad_leaf)
             leaves.remove(i);
           else
-            l.reached();
+            leaf.reached();
           closest = null;
           break;
-        } else if (d > max_dist) { // disregard branches that are too far away
+        } else if (distance_to_leaf > max_dist) { // disregard branches that are too far away
 
-        } else if (closest == null || d < record) {
+        } else if (closest == null || distance_to_leaf < record) {
 	  // saves the record-closest branch to each leaf and sets closestDir to the
 	  // vector between the leaf and branch
-          closest = b;
+          closest = branch;
           closestDir = dir;
-          record = d;
+          record = distance_to_leaf;
         }
       }
       if (closest != null) { // if a leaf has a closest branch
@@ -100,29 +100,29 @@ class Tree {
 
     // check all branches
     for (int i = branches.size()-1; i >= 0; i--) {
-      Branch b = branches.get(i);
-      if (b.count > 0) { // if this branch is closest to any leaves
-        b.dir.div(b.count);
-        b.dir.normalize(); // normal vector in a weighted direction towards close leaves
-        Branch newB = new Branch(b); // new branch in this direction
+      Branch branch = branches.get(i);
+      if (branch.count > 0) { // if this branch is closest to any leaves
+        branch.dir.div(branch.count);
+        branch.dir.normalize(); // normal vector in a weighted direction towards close leaves
+        Branch newB = new Branch(branch); // new branch in this direction
         branches.add(newB);
-        b.reset(); // reset Branch b to its original direction and reset count
+        branch.reset(); // reset Branch b to its original direction and reset count
       }
     }
   }
 
   void show() {
-    for (Leaf l : leaves) { // display all leaves
-      l.show(); // LEAF VISIBILITY
+    for (Leaf leaf : leaves) { // display all leaves
+      leaf.show(); // LEAF VISIBILITY
     }
     
     // update the radius of each branch; function implementation below
     updateBranchThickness(branches);
     
-    for (Branch b : branches) {
-      if (b.parent != null) {
-        b.show();
-        b.radius = 0; // reset branch radii to zero for next calculation
+    for (Branch branch : branches) {
+      if (branch.parent != null) {
+        branch.show();
+        branch.radius = 0; // reset branch radii to zero for next calculation
       }
     }
   }
@@ -134,20 +134,20 @@ class Tree {
 
     // loop backwards to ensure child branches come before parent branches
     for (int i = branches.size() - 1; i >= 0; i--) { // calculate branch thicknesses
-      Branch b = branches.get(i);
-      if (b.parent != null) {
+      Branch branch = branches.get(i);
+      if (branch.parent != null) {
         // slow method to compute so many squares and square roots
-        if (b.num_children == 0) { // reset terminal branch radius
-          b.radius = TIP_RADIUS;
-        } else if (b.num_children >= 2) { // root parent radius to get desired radius
-          b.radius = (float) Math.pow(b.radius, 1/(EXP_RATE));
+        if (branch.num_children == 0) { // reset terminal branch radius
+          branch.radius = TIP_RADIUS;
+        } else if (branch.num_children >= 2) { // root parent radius to get desired radius
+          branch.radius = (float) Math.pow(branch.radius, 1/(EXP_RATE));
         }
         
-        if (b.parent.num_children >= 2) { // signals a parent branch
+        if (branch.parent.num_children >= 2) { // signals a parent branch
           // b.parent.radius += b.radius * 0.9;
-          b.parent.radius += Math.pow(b.radius, EXP_RATE); // add powers of children radii to parent
+          branch.parent.radius += Math.pow(branch.radius, EXP_RATE); // add powers of children radii to parent
         } else {
-          b.parent.radius = b.radius + GROW_RATE; // linear growth along a single branch
+          branch.parent.radius = branch.radius + GROW_RATE; // linear growth along a single branch
         }
         
         

@@ -5,12 +5,10 @@
 // Code for: https://youtu.be/kKT0v3qhIQY
 
 Tree tree;
-float min_dist = 10; // when a leaf is within this distance it is popped
-float max_dist = 50; // leaves outside this distance are ignored
+float min_dist = 10; // default: 10 when a leaf is within this distance it is popped
+float max_dist = 50; // default: 50 leaves outside this distance are ignored
 PImage blossom; // image for blossom
 PImage branch_img;
-
-color BRANCH_BROWN = color(50,39,25);
 
 void setup() {
   // Function: setup
@@ -26,8 +24,9 @@ void setup() {
   // blossom = loadImage("cherry-blossom2.png");
   
   // branch_img = loadImage("http://2.bp.blogspot.com/-cgMIsh6MNho/UOsCYA7Xq1I/AAAAAAAAAp0/d7ZVbXA6XHU/s1600/Oak_Bark.jpg");
-  branch_img = loadImage("http://us.123rf.com/450wm/dollapoom/dollapoom1505/dollapoom150500099/40326226-dark-tree-bark-texture.jpg?ver=6");
+  //branch_img = loadImage("http://us.123rf.com/450wm/dollapoom/dollapoom1505/dollapoom150500099/40326226-dark-tree-bark-texture.jpg?ver=6");
   // branch_img = loadImage("dark_bark_texture.jpg");
+  branch_img = loadImage("http://previews.123rf.com/images/skif55/skif551302/skif55130200023/17724932-Dies-ist-eine-typische-gl-nzende-Rinde-Textur-von-einem-Kirschbaum-trunk-Lizenzfreie-Bilder.jpg");
   
   imageMode(CENTER); // images are drawn from the center
   rectMode(CENTER);
@@ -44,7 +43,7 @@ void draw() {
   tree.grow();
 }
 
-int distance = 60; //default 40
+int distance = 40; // default 40; radius around mouse inside which leaves randomly appear
 void mousePressed() {
   // Function: mousePressed
   // Description: mousePressed() runs when the mouse button is clicked down. Note:
@@ -56,7 +55,7 @@ void mousePressed() {
 }
 
 void mouseDragged() {
-  int timeframe = 4; // default 5
+  int timeframe = 5; // default 5; controls the rate at which new leaves are created
   // Function: mouseDragged
   // Description: mouseDragged() loops while the mouse is held down and moving. Holding
   //              the mouse button down in one place will not loop this function.
