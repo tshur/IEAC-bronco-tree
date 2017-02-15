@@ -17,7 +17,7 @@ class Tree {
     //              a trunk is extended from the bottom until it is within max_dist
     //              of any leaf (essentially, this moves within the vicinity of leaves)
 
-    for (int i = 0; i < 1000; i++) {  // should be 2000 for OG Tree
+    for (int i = 0; i < 300; i++) {  // should be 2000 for OG Tree
       leaves.add(new Leaf());
     }
     
@@ -25,12 +25,12 @@ class Tree {
     // leaves.add(new Leaf(new PVector(width/2, 0)));
     
     // Creating the root branch with dir pointing straight upwards
-    Branch root = new Branch(new PVector(width/2, height + 5), new PVector(0, -1));
+    Branch root = new Branch(new PVector(width/2, height + 5, 0), new PVector(0, -1, 0));
     branches.add(root);
     Branch current = new Branch(root);
 
     // Extends the root upwards until the current branch is within max_dist of a leaf
-    while (!closeEnough(current)) { 
+    while (!closeEnough(current)) {
       Branch trunk = new Branch(current);
       branches.add(trunk);
       current = trunk;
@@ -113,7 +113,7 @@ class Tree {
 
   void show() {
     for (Leaf l : leaves) { // display all leaves
-      l.show(); // LEAF VISIBILITY
+      l.show3D(); // LEAF VISIBILITY
     }
     
     // update the radius of each branch; function implementation below
@@ -121,14 +121,17 @@ class Tree {
     
     for (Branch b : branches) {
       if (b.parent != null) {
-        b.show();
-        b.radius = 0; // reset branch radii to zero for next calculation
+        b.show3D();
       }
+    }
+    
+    for (Branch b : branches) {
+        b.radius = 0;
     }
   }
   
   void updateBranchThickness(ArrayList<Branch> branches) {
-    float TIP_RADIUS = 0.8; // radius of the terminal branches
+    float TIP_RADIUS = 1; // radius of the terminal branches
     float GROW_RATE = 0.015; // growth rate as a single branch extends
     float EXP_RATE = 2.5;   // exponent for branch merge calculation (typically between 2-3)
 
