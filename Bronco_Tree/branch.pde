@@ -19,6 +19,7 @@ class Branch {
   float len = 5;
   int num_children = 0; // keep track of the number of children per branch segment
   float radius = 0;
+  float offsetLength = 0;
   
   float texture_index = 0;
   
@@ -89,9 +90,15 @@ class Branch {
   }
   
   void show3D() {
+    pushMatrix();
+    offset_3D();
     stroke(255);
     
     tube.fill(BRANCH_BROWN);
+    tube.fill(BRANCH_BROWN, Tube.BOTH_CAP);
+    //tube.setTexture(branch_img);
+    tube.setTexture( branch_img, Tube.BOTH_CAP );
+    
     
     //PVector diff = PVector.sub(saveDir, parent.saveDir).mult(parent.radius);
     //PVector normal = saveDir.cross(parent.saveDir);
@@ -102,8 +109,26 @@ class Branch {
     //tube.setSize(radius, radius, parent.radius, parent.radius, len + offset.mag());
     //tube.setWorldPos(pos, PVector.add(parent.pos, offset));
     
-    tube.setSize(radius, radius, parent.radius, parent.radius, len);
-    tube.setWorldPos(pos, parent.pos);
+    PVector newPos = this.pos.copy();
+    if( parent != null ) {
+      //newPos = PVector.add( this.pos, PVector.sub( parent.dir, this.dir ) );
+      PVector diff = PVector.sub(saveDir, parent.saveDir).mult(parent.radius);
+      PVector normal = saveDir.cross(parent.saveDir);
+      PVector offset = diff.cross(normal);
+      offset.normalize();
+      offset.setMag(offsetLength);
+      newPos = PVector.sub( this.pos, offset );
+    }
+     
+    if( parent != null ) {
+      tube.setSize( this.radius, this.radius, parent.radius, parent.radius, len+offsetLength );
+      tube.setWorldPos( newPos, parent.pos );//newPos);
+    } else {
+      tube.setSize( this.radius, this.radius, this.radius, this.radius, len );
+      tube.setWorldPos( this.pos, parent.pos );//newPos);
+    }
+    //tube.setSize(radius, radius, parent.radius, parent.radius, len);
+    //tube.setWorldPos(pos, parent.pos);
     
     tube.draw();
     
@@ -141,7 +166,22 @@ class Branch {
     //  vertex(x2, y2, len);
     //}
     //endShape(CLOSE);
-    //popMatrix();
+    popMatrix();
+  }
+  
+  void offset_3D() {
+    angle = ( parent.saveDir.heading() + PI/2 ) - ( this.saveDir.heading() + PI/2 );
+    if ( this.parent != null ) {
+       //if ( angle > PI/2 ) {
+       //    offsetLength = atan( angle ) * this.radius - ( parent.radius * atan( angle ) );
+       //} 
+       //if ( angle < PI/2 ) {
+           offsetLength = atan( angle ) * this.radius;
+       //} 
+    } else {
+       offsetLength = -this.radius; 
+    }
+    offsetLength += this.radius;
   }
 
   PVector next() {
