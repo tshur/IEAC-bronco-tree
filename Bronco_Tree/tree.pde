@@ -131,7 +131,7 @@ class Tree {
   }
   
   void updateBranchThickness(ArrayList<Branch> branches) {
-    float TIP_RADIUS = 1; // radius of the terminal branches
+    float TIP_RADIUS = 0.8; // radius of the terminal branches
     float GROW_RATE = 0.015; // growth rate as a single branch extends
     float EXP_RATE = 2.5;   // exponent for branch merge calculation (typically between 2-3)
 
@@ -157,6 +157,8 @@ class Tree {
         //stroke(255);
         //strokeWeight((float)Math.pow(b.radius, 1/2.4) * 2.0);
         //line(b.pos.x, b.pos.y, b.parent.pos.x, b.parent.pos.y);
+      } else {
+        b.radius = (float) Math.pow(b.radius, 1/(EXP_RATE)); 
       }
     }
    

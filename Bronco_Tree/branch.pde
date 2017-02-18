@@ -90,14 +90,12 @@ class Branch {
   }
   
   void show3D() {
-    pushMatrix();
+    //pushMatrix();
     offset_3D();
-    stroke(255);
+    //stroke(255);
     
-    tube.fill(BRANCH_BROWN);
-    tube.fill(BRANCH_BROWN, Tube.BOTH_CAP);
     //tube.setTexture(branch_img);
-    tube.setTexture( branch_img, Tube.BOTH_CAP );
+    //tube.setTexture( branch_img, Tube.BOTH_CAP );
     
     
     //PVector diff = PVector.sub(saveDir, parent.saveDir).mult(parent.radius);
@@ -110,23 +108,39 @@ class Branch {
     //tube.setWorldPos(pos, PVector.add(parent.pos, offset));
     
     PVector newPos = this.pos.copy();
+    PVector newParentPos = this.parent.pos.copy();
     if( parent != null ) {
       //newPos = PVector.add( this.pos, PVector.sub( parent.dir, this.dir ) );
-      PVector diff = PVector.sub(saveDir, parent.saveDir).mult(parent.radius);
-      PVector normal = saveDir.cross(parent.saveDir);
+      PVector tmp = saveDir.copy(); tmp.normalize();
+      PVector tmpP = parent.saveDir.copy(); tmpP.normalize();
+      PVector diff = PVector.sub(tmp, tmpP);
+      PVector normal = saveDir.cross(tmpP);
       PVector offset = diff.cross(normal);
-      offset.normalize();
-      offset.setMag(offsetLength);
-      newPos = PVector.sub( this.pos, offset );
+      //offset = saveDir.copy();
+      //offset.normalize();
+      //stroke(255, 0, 0);
+      //strokeWeight(1);
+      //pushMatrix();
+      //translate(this.pos.x + rad.x, this.pos.y + rad.y, this.pos.z + rad.z);
+      //line(0, 0, 0, offset.x * 10, offset.y * 10, offset.z * 10);
+      //popMatrix();
+        offset.normalize();
+        if (PVector.angleBetween(offset, parent.saveDir) < HALF_PI)
+          offset.mult(-1);
+        offset.mult(-offsetLength);
+        newPos = PVector.add( this.pos, offset );
+        newParentPos = PVector.sub( parent.pos, offset );
+      
+      tube.setSize( this.radius, this.radius, parent.radius, parent.radius);
+      tube.setWorldPos( newPos, newParentPos );
+    } else {
+      tube.setSize( this.radius, this.radius, this.radius, this.radius);
+      tube.setWorldPos( this.pos, PVector.sub(this.pos, new PVector(0, this.len, 0)));//newPos);
     }
      
-    if( parent != null ) {
-      tube.setSize( this.radius, this.radius, parent.radius, parent.radius, len+offsetLength );
-      tube.setWorldPos( newPos, parent.pos );//newPos);
-    } else {
-      tube.setSize( this.radius, this.radius, this.radius, this.radius, len );
-      tube.setWorldPos( this.pos, parent.pos );//newPos);
-    }
+    //tube.setSize(TOP_RAD, BOT_RAD)
+    //tube.setWorldPos(END POS, START POS (bottom))
+     
     //tube.setSize(radius, radius, parent.radius, parent.radius, len);
     //tube.setWorldPos(pos, parent.pos);
     
@@ -166,22 +180,24 @@ class Branch {
     //  vertex(x2, y2, len);
     //}
     //endShape(CLOSE);
-    popMatrix();
+    //popMatrix();
   }
   
   void offset_3D() {
-    angle = ( parent.saveDir.heading() + PI/2 ) - ( this.saveDir.heading() + PI/2 );
+    angle = ( parent.saveDir.heading()) - ( this.saveDir.heading());
     if ( this.parent != null ) {
        //if ( angle > PI/2 ) {
        //    offsetLength = atan( angle ) * this.radius - ( parent.radius * atan( angle ) );
        //} 
        //if ( angle < PI/2 ) {
-           offsetLength = atan( angle ) * this.radius;
+           // offsetLength = tan( angle ) * this.radius;
+           // law of cosines
+           offsetLength = pow(2 * pow(parent.radius, 2) * (1 - cos(angle)), 0.5);
        //} 
     } else {
-       offsetLength = -this.radius; 
+       offsetLength = 0; 
     }
-    offsetLength += this.radius;
+    // offsetLength += this.radius;
   }
 
   PVector next() {

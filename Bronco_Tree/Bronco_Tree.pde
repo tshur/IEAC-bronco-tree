@@ -41,7 +41,9 @@ void setup() {
   rectMode(CENTER);
   
   tube = new Tube(this, 1, 8);
-  tube.setSize(25, 25, 25, 25, 5);
+  tube.setSize(25, 25, 25, 25);
+  tube.fill(BRANCH_BROWN);
+  tube.fill(BRANCH_BROWN, Tube.BOTH_CAP);
 }
 
 void draw() {
@@ -55,6 +57,12 @@ void draw() {
   
   tree.show();
   tree.grow();
+  
+  //tube.setSize(TOP_RAD, BOT_RAD)
+  //tube.setSize(5, 5, 8, 8);
+  //tube.setWorldPos(END POS, START POS (bottom))
+  //tube.setWorldPos( new PVector(0,-15,0), new PVector(0,0,0) );
+  //tube.draw();
   
   stroke(255,0,0); //red, x-axis
   line(0,0,0,500,0,0);
