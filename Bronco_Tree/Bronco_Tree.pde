@@ -10,7 +10,7 @@ import processing.video.*;
 // Tree
 Tree tree;
 float min_dist = 10; // when a leaf is within this distance it is popped
-float max_dist = 50; // leaves outside this distance are ignored
+float max_dist = 70; // leaves outside this distance are ignored
 PImage blossom; // image for blossom
 PImage branch_img;
 color BRANCH_BROWN = color(50,39,25);
@@ -28,24 +28,25 @@ void setup() {
   // Description: setup() runs one time when the sketch is initialized
 
   // General setup options
-  size(600, 600, P2D); // creates the canvas to be width=600px by height=600px
+  size(640, 360, P2D); // creates the canvas to be width=600px by height=600px
   //smooth(4); // smooth(level) is level-x anti-aliasing. Default for P2D is 2x. noSmooth() turns off
   //background(255);
+  //frameRate(30);
   
   // Tree set up
-  //tree = new Tree();
-  blossom = loadImage("http://www.emoji.co.uk/files/twitter-emojis/animals-nature-twitter/10730-cherry-blossom.png");
-  // blossom = loadImage("cherry-blossom2.png");
+  tree = new Tree();
+  //blossom = loadImage("http://www.emoji.co.uk/files/twitter-emojis/animals-nature-twitter/10730-cherry-blossom.png");
+  blossom = loadImage("cherry-blossom2.png");
   // branch_img = loadImage("http://2.bp.blogspot.com/-cgMIsh6MNho/UOsCYA7Xq1I/AAAAAAAAAp0/d7ZVbXA6XHU/s1600/Oak_Bark.jpg");
-  branch_img = loadImage("http://us.123rf.com/450wm/dollapoom/dollapoom1505/dollapoom150500099/40326226-dark-tree-bark-texture.jpg?ver=6");
-  // branch_img = loadImage("dark_bark_texture.jpg");
-  //imageMode(CENTER); // images are drawn from the center
-  //rectMode(CENTER);
+  //branch_img = loadImage("http://us.123rf.com/450wm/dollapoom/dollapoom1505/dollapoom150500099/40326226-dark-tree-bark-texture.jpg?ver=6");
+  branch_img = loadImage("dark_bark_texture.jpg");
+  imageMode(CENTER); // images are drawn from the center
+  rectMode(CENTER);
  
   // Video set up
   video = getCam();
   video.start();
-  trackColor = color(255, 0, 0);
+  trackColor = color(150, 35, 82);
 
 }
 
@@ -55,20 +56,29 @@ void draw() {
 
   surface.setTitle(int(frameRate) + " fps");
 
+  //background(230);
+
   // Draw tree-related stuff
   //background(230); // Draw a gray (RGB: 230 230 230) background (overwrites sketch)
-  //tree.show();
-  //tree.grow();
+  
   
   // Draw video/CV related stuff
+  imageMode(CORNER);
   video.loadPixels();
+  //tint(255, 20);
   image(video, 0, 0);
+  imageMode(CENTER);
   renderBlobs();
+  addBlobLeaves();
+  
+  //tint(255, 255);
+  tree.show();
+  tree.grow();
 }
 
 void renderBlobs(){
     blobs.clear();
-    int colorThreshold = 120;
+    int colorThreshold = 20;
     // Loop through every pixel, seeing if it is within the color range to be detected
     for(int x = 0; x < video.width; x++){
       for(int y = 0; y < video.height; y++){
@@ -106,9 +116,9 @@ void renderBlobs(){
     } 
     // Render all blob rectangles
     for(Blob b : blobs){
-      if(b.size() > 150){
-        b.show();
-      }
+      //if(b.size() > 150){
+        //b.show();
+      //}
     }
 }
 
@@ -116,7 +126,7 @@ void captureEvent(Capture video){
     video.read();
 }
 
-int distance = 60; //default 40
+int distance = 30; //default 40
 void mousePressed() {
   // Function: mousePressed
   // Description: mousePressed() runs when the mouse button is clicked down. Note:
@@ -131,6 +141,7 @@ void mousePressed() {
   // Mouse functionality for blob color selection
   int loc = mouseX + mouseY*video.width;
   trackColor = video.pixels[loc];
+  print(red(trackColor) + " " + green(trackColor) + " " + blue(trackColor) + " ");
 }
 
 void mouseDragged() {
@@ -143,5 +154,19 @@ void mouseDragged() {
   
   if( (int)( Math.random() * timeframe ) == 0 ) {
     tree.newLeaf(new PVector(mouseX + randomX, mouseY + randomY));
+  }
+}
+
+void addBlobLeaves() {
+  int timeframe = 2;
+  
+  int randomX = (int) ( Math.random() * distance ) - distance/2;
+  int randomY = (int) ( Math.random() * distance ) - distance/2;
+  
+  if( (int)( Math.random() * timeframe ) == 0 ) {
+    for (Blob b : blobs) {
+      if (b.size() > 30)
+      tree.newLeaf(new PVector(b.get_center_x() + randomX, b.get_center_y() + randomY));
+    }
   }
 }

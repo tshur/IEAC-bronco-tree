@@ -47,4 +47,12 @@ class Blob{
       return false;
     }
   }
+  
+  float get_center_x() {
+    return (min_x + max_x) / 2;
+  }
+  
+  float get_center_y() {
+    return (min_y + max_y) / 2; 
+  }
 }

@@ -12,7 +12,7 @@ Capture getCam(){
   else {
     println("Available cameras:");
     // Search for the best camera
-    for (int i = 0; i < cameras.length; i++) {
+    for (int i = cameras.length - 1; i >= 0; i--) {
       // Search where the fps number is
       int p = cameras[i].indexOf("fps=");
       // Search where the width begins
@@ -34,6 +34,8 @@ Capture getCam(){
         // if the fps is faster than 20, select it as camera height&width!
         camWidth = Integer.parseInt(cameras[i].substring(q+5, r));
         camHeight = Integer.parseInt(cameras[i].substring(r+1, s));
+        if (camWidth == width)
+          break;
       }
       println(cameras[i]);
     }

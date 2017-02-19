@@ -17,7 +17,7 @@ class Tree {
     //              a trunk is extended from the bottom until it is within max_dist
     //              of any leaf (essentially, this moves within the vicinity of leaves)
 
-    for (int i = 0; i < 1000; i++) {  // should be 2000 for OG Tree
+    for (int i = 0; i < 1; i++) {  // should be 2000 for OG Tree
       leaves.add(new Leaf());
     }
     
@@ -30,11 +30,11 @@ class Tree {
     Branch current = new Branch(root);
 
     // Extends the root upwards until the current branch is within max_dist of a leaf
-    while (!closeEnough(current)) { 
-      Branch trunk = new Branch(current);
-      branches.add(trunk);
-      current = trunk;
-    }
+    //while (!closeEnough(current)) { 
+      //Branch trunk = new Branch(current);
+      //branches.add(trunk);
+      //current = trunk;
+    //}
   }
 
   boolean closeEnough(Branch b) {
