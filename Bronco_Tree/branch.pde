@@ -16,7 +16,7 @@ class Branch {
   PVector dir;
   int count = 0;
   PVector saveDir;
-  float len = 5;
+  float len = 0.2;
   float fin_len = 5;
   int num_children = 0; // keep track of the number of children per branch segment
   float radius = 0;
@@ -131,9 +131,14 @@ class Branch {
         offset.mult(-offsetLength);
         newPos = PVector.sub( this.pos, offset );
         newParentPos = PVector.add( parent.pos, offset );
-      
       tube.setSize( this.radius, this.radius, parent.radius, parent.radius);
-      tube.setWorldPos( newPos, newParentPos ); // MULT BY LEN/MAX_LEN
+      if (len < fin_len) {
+        // shorten branch length
+        PVector dir = PVector.sub(newPos, newParentPos);
+        dir.mult(len / fin_len);
+        newPos = PVector.add(newParentPos, dir);
+      }
+      tube.setWorldPos( newPos, newParentPos ); // MULT BY LEN/fin_LEN
     } else {
       tube.setSize( this.radius, this.radius, this.radius, this.radius);
       tube.setWorldPos( this.pos, PVector.sub(this.pos, new PVector(0, this.len, 0)));//newPos);
@@ -210,5 +215,7 @@ class Branch {
   
   void grow() {
     len += 0.2;
+    if (len > fin_len)
+      len = fin_len;
   }
 }

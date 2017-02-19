@@ -101,12 +101,17 @@ class Tree {
     // check all branches
     for (int i = branches.size()-1; i >= 0; i--) {
       Branch b = branches.get(i);
-      if (b.count > 0) { // if this branch is closest to any leaves
-        b.dir.div(b.count);
-        b.dir.normalize(); // normal vector in a weighted direction towards close leaves
-        Branch newB = new Branch(b); // new branch in this direction
-        branches.add(newB);
-        b.reset(); // reset Branch b to its original direction and reset count
+      if (b.len < b.fin_len) {
+        b.grow();
+        b.reset(); 
+      } else {
+        if (b.count > 0) { // if this branch is closest to any leaves
+          b.dir.div(b.count);
+          b.dir.normalize(); // normal vector in a weighted direction towards close leaves
+          Branch newB = new Branch(b); // new branch in this direction
+          branches.add(newB);
+          b.reset(); // reset Branch b to its original direction and reset count
+        }
       }
     }
   }
