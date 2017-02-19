@@ -13,8 +13,8 @@ PeasyCam cam;
 Tube tube;
 
 Tree tree;
-float min_dist = 30; // when a leaf is within this distance it is popped
-float max_dist = 150; // leaves outside this distance are ignored
+float min_dist = 40; // when a leaf is within this distance it is popped
+float max_dist = 300; // leaves outside this distance are ignored
 PImage blossom; // image for blossom
 PImage branch_img;
 float y_rot = 0;
@@ -54,7 +54,7 @@ void draw() {
   background(200);
   surface.setTitle(int(frameRate) + " fps");
 
-  float rot_rate = radians(1);
+  float rot_rate = radians(0.5);
   cam.rotateY(rot_rate);
   y_rot = (y_rot + rot_rate) % TWO_PI;
   //background(230); // Draw a gray (RGB: 230 230 230) background (overwrites sketch)

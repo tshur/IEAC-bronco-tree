@@ -17,7 +17,7 @@ class Tree {
     //              a trunk is extended from the bottom until it is within max_dist
     //              of any leaf (essentially, this moves within the vicinity of leaves)
 
-    for (int i = 0; i < 500; i++) {  // should be 2000 for OG Tree
+    for (int i = 0; i < 1000; i++) {  // should be 2000 for OG Tree
       leaves.add(new Leaf());
     }
     
@@ -63,8 +63,8 @@ class Tree {
       for (Branch b : branches) {
         PVector dir = PVector.sub(l.pos, b.pos);
         float d = dir.mag(); // d is the distance between the leaf and branch
-        if (b.num_children > 0) // segments inside branches less likely to link to leaves
-          d *= 1.05; // higher the value, the more likely the terminal branches will seek leaves
+        //if (b.num_children > 0) // segments inside branches less likely to link to leaves
+          //d *= 1.05; // higher the value, the more likely the terminal branches will seek leaves
         if (d < min_dist) { // a branch has reached the leaf
           if (l.bad_leaf)
             leaves.remove(i);
