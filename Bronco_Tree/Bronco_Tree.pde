@@ -14,7 +14,7 @@ Tube tube;
 
 Tree tree;
 float min_dist = 40; // when a leaf is within this distance it is popped
-float max_dist = 300; // leaves outside this distance are ignored
+float max_dist = 150; // leaves outside this distance are ignored
 PImage blossom; // image for blossom
 PImage branch_img;
 float y_rot = 0;
@@ -53,6 +53,7 @@ void draw() {
   // Description: draw() runs one time every frame
   background(200);
   surface.setTitle(int(frameRate) + " fps");
+  lights();
 
   float rot_rate = radians(0.5);
   cam.rotateY(rot_rate);
@@ -98,7 +99,7 @@ void mousePressed() {
 }
 
 void mouseDragged() {
-  int timeframe = 4; // default 5
+  int timeframe = 8; // default 5
   // Function: mouseDragged
   // Description: mouseDragged() loops while the mouse is held down and moving. Holding
   //              the mouse button down in one place will not loop this function.
