@@ -3,16 +3,26 @@
 // Daniel Shiffman
 // http://patreon.com/codingtrain
 // Code for: https://youtu.be/kKT0v3qhIQY
+import peasy.*;
+
+import shapes3d.utils.*;
+import shapes3d.animation.*;
+import shapes3d.*;
+
+PeasyCam cam;
+Tube tube;
 
 // Used for webcam
 import processing.video.*;
 
 // Tree
 Tree tree;
-float min_dist = 10; // when a leaf is within this distance it is popped
-float max_dist = 70; // leaves outside this distance are ignored
+float min_dist = 40; // when a leaf is within this distance it is popped
+float max_dist = 150; // leaves outside this distance are ignored
 PImage blossom; // image for blossom
 PImage branch_img;
+float y_rot = 0;
+
 color BRANCH_BROWN = color(50,39,25);
 
 // Video
@@ -27,39 +37,41 @@ void setup() {
   // Function: setup
   // Description: setup() runs one time when the sketch is initialized
 
-  // General setup options
-  size(640, 360, P2D); // creates the canvas to be width=600px by height=600px
-  //smooth(4); // smooth(level) is level-x anti-aliasing. Default for P2D is 2x. noSmooth() turns off
-  //background(255);
-  //frameRate(30);
+  size(600, 600, P3D); // creates the canvas to be width=600px by height=600px
+  cam = new PeasyCam(this, width/2, height/2 - 50, 0, width);
+  cam.setActive(false);
   
-  // Tree set up
   tree = new Tree();
+  
   //blossom = loadImage("http://www.emoji.co.uk/files/twitter-emojis/animals-nature-twitter/10730-cherry-blossom.png");
-  blossom = loadImage("cherry-blossom2.png");
+  // blossom = loadImage("cherry-blossom2.png");
+  
   // branch_img = loadImage("http://2.bp.blogspot.com/-cgMIsh6MNho/UOsCYA7Xq1I/AAAAAAAAAp0/d7ZVbXA6XHU/s1600/Oak_Bark.jpg");
   //branch_img = loadImage("http://us.123rf.com/450wm/dollapoom/dollapoom1505/dollapoom150500099/40326226-dark-tree-bark-texture.jpg?ver=6");
-  branch_img = loadImage("dark_bark_texture.jpg");
-  imageMode(CENTER); // images are drawn from the center
-  rectMode(CENTER);
- 
+  // branch_img = loadImage("dark_bark_texture.jpg");
+  
   // Video set up
   video = getCam();
   video.start();
   trackColor = color(150, 35, 82);
-
+  
+  imageMode(CENTER); // images are drawn from the center
+  rectMode(CENTER);
+  
+  tube = new Tube(this, 1, 8);
+  tube.setSize(25, 25, 25, 25);
+  tube.fill(BRANCH_BROWN);
+  tube.fill(BRANCH_BROWN, Tube.BOTH_CAP);
 }
 
 void draw() {
   // Function: draw
   // Description: draw() runs one time every frame
-
   surface.setTitle(int(frameRate) + " fps");
-
-  //background(230);
+  lights();
 
   // Draw tree-related stuff
-  //background(230); // Draw a gray (RGB: 230 230 230) background (overwrites sketch)
+  background(230); // Draw a gray (RGB: 230 230 230) background (overwrites sketch)
   
   
   // Draw video/CV related stuff
@@ -71,9 +83,20 @@ void draw() {
   renderBlobs();
   addBlobLeaves();
   
-  //tint(255, 255);
+  // Camera view setup
+  float ROTATION_RATE = radians(0.5);
+  cam.rotateY(ROTATION_RATE);
+  y_rot = (y_rot + ROTATION_RATE) % TWO_PI;
+  
   tree.show();
   tree.grow();
+  
+  stroke(255,0,0); //red, x-axis
+  line(0,0,0,500,0,0);
+  stroke(0,255,0); //green, y-axis
+  line(0,0,0,0,500,0);
+  stroke(0,0,255); //blue, z-axis
+  line(0,0,0,0,0,500);
 }
 
 void renderBlobs(){
@@ -128,32 +151,39 @@ void captureEvent(Capture video){
 
 int distance = 30; //default 40
 void mousePressed() {
-  // Function: mousePressed
-  // Description: mousePressed() runs when the mouse button is clicked down. Note:
+  // Function: keyPressed
+  // Description: keyPressed() runs when the mouse button is clicked down. Note:
   //              if the mouse is clicked and held, but not necessarily released, 
   //              this function will have run only once.
-  
-  // Mouse functionality for tree drawing
-  //int randomX = (int) ( Math.random() * distance ) - distance/2;
-  //int randomY = (int) ( Math.random() * distance ) - distance/2;
-  //tree.newLeaf(new PVector(mouseX + randomX, mouseY + randomY)); // adds a new leaf to the tree with current mouse position
 
-  // Mouse functionality for blob color selection
-  int loc = mouseX + mouseY*video.width;
-  trackColor = video.pixels[loc];
-  print(red(trackColor) + " " + green(trackColor) + " " + blue(trackColor) + " ");
+  if(mouseButton == RIGHT){
+    // Mouse functionality for blob color selection
+    int loc = mouseX + mouseY*video.width;
+    trackColor = video.pixels[loc];
+    print(red(trackColor) + " " + green(trackColor) + " " + blue(trackColor) + " ");
+  }
+  if(mouseButton == LEFT){
+    // Mouse functionality for tree drawing
+    float x = cam.getLookAt()[0] + cos(-y_rot)*(mouseX + randomX - width/2);
+    float y = cam.getLookAt()[1] + mouseY + randomY - height/2;
+    float z = cam.getLookAt()[2] + sin(-y_rot)*(mouseX + randomX - width/2);
+    tree.newLeaf(new PVector(x, y, z)); // adds a new leaf to the tree with current mouse position  
+  }
 }
 
 void mouseDragged() {
-  int timeframe = 4; // default 5
+  int timeframe = 8; // default 5
   // Function: mouseDragged
   // Description: mouseDragged() loops while the mouse is held down and moving. Holding
   //              the mouse button down in one place will not loop this function.
-  int randomX = (int) ( Math.random() * distance ) - distance/2;
-  int randomY = (int) ( Math.random() * distance ) - distance/2;
-  
+
   if( (int)( Math.random() * timeframe ) == 0 ) {
-    tree.newLeaf(new PVector(mouseX + randomX, mouseY + randomY));
+    int randomX = (int) ( Math.random() * distance ) - distance/2;
+    int randomY = (int) ( Math.random() * distance ) - distance/2;
+    float x = cam.getLookAt()[0] + cos(-y_rot)*(mouseX + randomX - width/2);
+    float y = cam.getLookAt()[1] + mouseY + randomY - height/2;
+    float z = cam.getLookAt()[2] + sin(-y_rot)*(mouseX + randomX - width/2);
+    tree.newLeaf(new PVector(x, y, z));
   }
 }
 

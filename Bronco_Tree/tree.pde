@@ -17,7 +17,7 @@ class Tree {
     //              a trunk is extended from the bottom until it is within max_dist
     //              of any leaf (essentially, this moves within the vicinity of leaves)
 
-    for (int i = 0; i < 1; i++) {  // should be 2000 for OG Tree
+    for (int i = 0; i < 100; i++) {  // should be 2000 for OG Tree
       leaves.add(new Leaf());
     }
     
@@ -25,16 +25,16 @@ class Tree {
     // leaves.add(new Leaf(new PVector(width/2, 0)));
     
     // Creating the root branch with dir pointing straight upwards
-    Branch root = new Branch(new PVector(width/2, height + 5), new PVector(0, -1));
+    Branch root = new Branch(new PVector(width/2, height + 5, 0 ), new PVector(0, -1, 0));
     branches.add(root);
     Branch current = new Branch(root);
 
     // Extends the root upwards until the current branch is within max_dist of a leaf
-    //while (!closeEnough(current)) { 
-      //Branch trunk = new Branch(current);
-      //branches.add(trunk);
-      //current = trunk;
-    //}
+    while (!closeEnough(current)) {
+      Branch trunk = new Branch(current);
+      branches.add(trunk);
+      current = trunk;
+    }
   }
 
   boolean closeEnough(Branch b) {
@@ -64,7 +64,7 @@ class Tree {
         PVector dir = PVector.sub(l.pos, b.pos);
         float d = dir.mag(); // d is the distance between the leaf and branch
         if (b.num_children > 0) // segments inside branches less likely to link to leaves
-          d *= 1.05; // higher the value, the more likely the terminal branches will seek leaves
+          d *= 1.03; // higher the value, the more likely the terminal branches will seek leaves
         if (d < min_dist) { // a branch has reached the leaf
           if (l.bad_leaf)
             leaves.remove(i);
@@ -101,19 +101,24 @@ class Tree {
     // check all branches
     for (int i = branches.size()-1; i >= 0; i--) {
       Branch b = branches.get(i);
-      if (b.count > 0) { // if this branch is closest to any leaves
-        b.dir.div(b.count);
-        b.dir.normalize(); // normal vector in a weighted direction towards close leaves
-        Branch newB = new Branch(b); // new branch in this direction
-        branches.add(newB);
-        b.reset(); // reset Branch b to its original direction and reset count
+      if (b.len < b.fin_len) {
+        b.grow();
+        b.reset(); 
+      } else {
+        if (b.count > 0) { // if this branch is closest to any leaves
+          b.dir.div(b.count);
+          b.dir.normalize(); // normal vector in a weighted direction towards close leaves
+          Branch newB = new Branch(b); // new branch in this direction
+          branches.add(newB);
+          b.reset(); // reset Branch b to its original direction and reset count
+        }
       }
     }
   }
 
   void show() {
     for (Leaf l : leaves) { // display all leaves
-      l.show(); // LEAF VISIBILITY
+      //l.show3D(); // LEAF VISIBILITY
     }
     
     // update the radius of each branch; function implementation below
@@ -121,9 +126,12 @@ class Tree {
     
     for (Branch b : branches) {
       if (b.parent != null) {
-        b.show();
-        b.radius = 0; // reset branch radii to zero for next calculation
+        b.show3D();
       }
+    }
+    
+    for (Branch b : branches) {
+        b.radius = 0;
     }
   }
   
@@ -154,6 +162,8 @@ class Tree {
         //stroke(255);
         //strokeWeight((float)Math.pow(b.radius, 1/2.4) * 2.0);
         //line(b.pos.x, b.pos.y, b.parent.pos.x, b.parent.pos.y);
+      } else {
+        b.radius = (float) Math.pow(b.radius, 1/(EXP_RATE)); 
       }
     }
    

@@ -9,7 +9,7 @@ class Leaf {
   PVector pos;
   boolean reached = false; // has this leaf been reached by a branch yet
   boolean bloomed = false;
-  boolean bad_leaf = (random(1) < 0.6); // bad_leaves do not grow after they are reached
+  boolean bad_leaf = false; //(random(1) < 0.6); // bad_leaves do not grow after they are reached
   float radius = 1;
   float rotation = random(0, HALF_PI);
   float BLOOM_RADIUS = random(6, 12);
@@ -20,7 +20,7 @@ class Leaf {
 
   Leaf() {
     // Constructor creates a leaf with a random position
-    pos = PVector.random2D(); // creates a random 2D vector
+    pos = PVector.random3D(); // creates a random 2D vector
     pos.mult( sqrt( random(width*width/4) ) ); // uniform disk
     pos.x += width/2;
     pos.y += 2.0/5*height;
@@ -67,6 +67,24 @@ class Leaf {
     
     if( System.currentTimeMillis() - creationTime >= 5000 ) {  // NEW check for expiration after show
        shouldExpire = true; 
+    }
+  }
+  
+  void show3D() {
+      // PETAL DRAWING
+      fill(255);
+      stroke(255);
+      pushMatrix(); // stores the current drawing frame
+      translate(pos.x, pos.y, pos.z);
+      sphere(radius);
+      popMatrix(); // returns to last pushed drawing frame
+    
+      //fill(253, 240, 43);
+      //noStroke();
+      //ellipse(pos.x, pos.y, radius / 2, radius / 2);
+    
+    if( System.currentTimeMillis() - creationTime >= 5000 ) {  // NEW check for expiration after show
+       //shouldExpire = true; 
     }
   }
   
