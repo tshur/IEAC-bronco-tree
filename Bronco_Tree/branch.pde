@@ -215,7 +215,7 @@ class Branch {
   }
   
   void grow() {
-    len += 2.0;
+    len += 4.0;
     if (len > fin_len)
       len = fin_len;
   }

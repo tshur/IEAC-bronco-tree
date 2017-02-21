@@ -17,8 +17,8 @@ import processing.video.*;
 
 // Tree
 Tree tree;
-float min_dist = 40; // when a leaf is within this distance it is popped
-float max_dist = 150; // leaves outside this distance are ignored
+float min_dist = 20; // when 1 leaf is within this distance it is popped
+float max_dist = 350; // leaves outside this distance are ignored
 PImage blossom; // image for blossom
 PImage branch_img;
 float y_rot = 0;
@@ -53,7 +53,7 @@ void setup() {
   // Video set up
   video = getCam();
   video.start();
-  trackColor = color(0, 255, 0);
+  trackColor = color(220, 65, 96);
   
   imageMode(CENTER); // images are drawn from the center
   rectMode(CENTER);
@@ -68,14 +68,14 @@ void draw() {
   // Function: draw
   // Description: draw() runs one time every frame
   surface.setTitle(int(frameRate) + " fps");
-  lights();
+  //lights();
 
   // Draw tree-related stuff
-  background(230); // Draw a gray (RGB: 230 230 230) background (overwrites sketch)
+  //background(230); // Draw a gray (RGB: 230 230 230) background (overwrites sketch)
  
-  
+  background(255);
   // Camera view setup
-  float ROTATION_RATE = radians(0);
+  float ROTATION_RATE = radians(0.4);
   cam.rotateY(ROTATION_RATE);
   y_rot = (y_rot + ROTATION_RATE) % TWO_PI;
   
@@ -84,9 +84,12 @@ void draw() {
   translate(width/2, height/2 - 50, 0);
   rotateY(y_rot);
   translate(0, 0, -600);
-  video.loadPixels();
+  //video.loadPixels();
   tint(255, 100);
-  image(video, 0, 0, 2*width + 180, 2*height + 180);
+  //scale(-1.0, 1.0);
+  //image(video, 0, 0, 2*width + 180, 2*height + 180);
+  tint(255, 255);
+  //scale(-1.0, 1.0);
   renderBlobs();
   addBlobLeaves();
   popMatrix();
@@ -94,12 +97,12 @@ void draw() {
   tree.show();
   tree.grow();
   
-  stroke(255,0,0); //red, x-axis
-  line(0,0,0,500,0,0);
-  stroke(0,255,0); //green, y-axis
-  line(0,0,0,0,500,0);
-  stroke(0,0,255); //blue, z-axis
-  line(0,0,0,0,0,500);
+  //stroke(255,0,0); //red, x-axis
+  //line(0,0,0,500,0,0);
+  //stroke(0,255,0); //green, y-axis
+  //line(0,0,0,0,500,0);
+  //stroke(0,0,255); //blue, z-axis
+  //line(0,0,0,0,0,500);
 }
 
 void renderBlobs(){
@@ -145,7 +148,7 @@ void renderBlobs(){
     // Render all blob rectangles
     for(Blob b : blobs){
       if(b.size() > 300){
-        b.show();
+        //b.show();
       }
     }
 }
@@ -154,7 +157,7 @@ void captureEvent(Capture video){
     video.read();
 }
 
-int distance = 30; //default 40
+int distance = 80; //default 40
 void mousePressed() {
   // Function: keyPressed
   // Description: keyPressed() runs when the mouse button is clicked down. Note:
@@ -195,7 +198,7 @@ void mouseDragged() {
 }
 
 void addBlobLeaves() {
-  int timeframe = 12;
+  int timeframe = 8;
   
   int randomX = (int) ( Math.random() * distance ) - distance/2;
   int randomY = (int) ( Math.random() * distance ) - distance/2;

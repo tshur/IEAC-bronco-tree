@@ -9,16 +9,21 @@ class Leaf {
   PVector pos;
   boolean reached = false; // has this leaf been reached by a branch yet
   boolean bloomed = false;
-  boolean bad_leaf = false; //(random(1) < 0.6); // bad_leaves do not grow after they are reached
-  float radius = 1;
+  boolean bad_leaf = random(1) < 0.2; // bad_leaves do not grow after they are reached
+  float radius = 2;
   float rotation = random(0, HALF_PI);
-  float BLOOM_RADIUS = random(6, 12);
-  color col = color(255);
-  
+  float BLOOM_RADIUS = random(3, 5);
+  color col = color(255, 183, 197);
   boolean shouldExpire = false;     // NEW
   long creationTime;                // NEW
 
+  void changeCol(){
+    if(random(1) < 0.3)
+      col = color(255, 255, 255);
+  }
+  
   Leaf() {
+    changeCol();
     // Constructor creates a leaf with a random position
     pos = PVector.random3D(); // creates a random 2D vector
     pos.mult( sqrt( random(width*width/4) ) ); // uniform disk
@@ -30,6 +35,7 @@ class Leaf {
   }
 
   Leaf(PVector pos_) {
+    changeCol();
     // Constructor creates a leaf with given position
     pos = pos_;
     creationTime = System.currentTimeMillis(); // NEW creation time
@@ -65,32 +71,31 @@ class Leaf {
       //noStroke();
       //ellipse(pos.x, pos.y, radius / 2, radius / 2);
     
-    if( System.currentTimeMillis() - creationTime >= 2000 ) {  // NEW check for expiration after show
+    if( System.currentTimeMillis() - creationTime >= 5000 ) {  // NEW check for expiration after show
        shouldExpire = true; 
     }
   }
   
   void show3D() {
       // PETAL DRAWING
-      fill(255);
-      stroke(255);
+      fill(col);
+      noStroke();
+      //stroke(230, 170, 180);
       pushMatrix(); // stores the current drawing frame
       translate(pos.x, pos.y, pos.z);
-      sphere(radius);
+      box(radius);
       popMatrix(); // returns to last pushed drawing frame
     
       //fill(253, 240, 43);
       //noStroke();
       //ellipse(pos.x, pos.y, radius / 2, radius / 2);
     
-    if( System.currentTimeMillis() - creationTime >= 2000 ) {  // NEW check for expiration after show
+    if( System.currentTimeMillis() - creationTime >= 1000 ) {  // NEW check for expiration after show
        shouldExpire = true; 
     }
   }
   
   void grow() {
-    if (col == color(255))
-      col = color(255, 102, 204);
     radius += BLOOM_RADIUS / 30.0;
   }
 }
