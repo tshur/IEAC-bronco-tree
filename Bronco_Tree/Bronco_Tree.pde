@@ -53,7 +53,7 @@ void setup() {
   // Video set up
   video = getCam();
   video.start();
-  trackColor = color(150, 35, 82);
+  trackColor = color(0, 255, 0);
   
   imageMode(CENTER); // images are drawn from the center
   rectMode(CENTER);
@@ -72,21 +72,24 @@ void draw() {
 
   // Draw tree-related stuff
   background(230); // Draw a gray (RGB: 230 230 230) background (overwrites sketch)
-  
-  
-  // Draw video/CV related stuff
-  imageMode(CORNER);
-  video.loadPixels();
-  //tint(255, 20);
-  image(video, 0, 0);
-  imageMode(CENTER);
-  renderBlobs();
-  addBlobLeaves();
+ 
   
   // Camera view setup
-  float ROTATION_RATE = radians(0.5);
+  float ROTATION_RATE = radians(0);
   cam.rotateY(ROTATION_RATE);
   y_rot = (y_rot + ROTATION_RATE) % TWO_PI;
+  
+  // Draw video/CV related stuff
+  pushMatrix();
+  translate(width/2, height/2 - 50, 0);
+  rotateY(y_rot);
+  translate(0, 0, -600);
+  video.loadPixels();
+  tint(255, 100);
+  image(video, 0, 0, 2*width + 180, 2*height + 180);
+  renderBlobs();
+  addBlobLeaves();
+  popMatrix();
   
   tree.show();
   tree.grow();
@@ -101,11 +104,13 @@ void draw() {
 
 void renderBlobs(){
     blobs.clear();
-    int colorThreshold = 20;
+    int colorThreshold = 50;
     // Loop through every pixel, seeing if it is within the color range to be detected
     for(int x = 0; x < video.width; x++){
       for(int y = 0; y < video.height; y++){
         int loc = x + y * video.width;
+        int pos_x = (int) map(x, 0, video.width, 0, width);
+        int pos_y = (int) map(y, 0, video.height, 0, height);
         // Get current color
         color currentColor = video.pixels[loc];
         float r1 = red(currentColor);
@@ -122,8 +127,8 @@ void renderBlobs(){
         if (d < colorThreshold * colorThreshold){
           boolean found = false;
           for(Blob b : blobs){
-            if (b.isNear(x, y)){
-              b.add(x, y);
+            if (b.isNear(pos_x, pos_y)){
+              b.add(pos_x, pos_y);
               found = true;
               break;
             }
@@ -131,7 +136,7 @@ void renderBlobs(){
           
           // If no blob is found, make a new blob with that pixel
           if(!found){
-            Blob b = new Blob(x, y);
+            Blob b = new Blob(pos_x, pos_y);
             blobs.add(b);
           }
         } 
@@ -139,9 +144,9 @@ void renderBlobs(){
     } 
     // Render all blob rectangles
     for(Blob b : blobs){
-      //if(b.size() > 150){
-        //b.show();
-      //}
+      if(b.size() > 300){
+        b.show();
+      }
     }
 }
 
@@ -158,12 +163,14 @@ void mousePressed() {
 
   if(mouseButton == RIGHT){
     // Mouse functionality for blob color selection
-    int loc = mouseX + mouseY*video.width;
+    int loc = (int) map(mouseX, 0, width, 0, video.width) + ((int) map(mouseY, 0, height, 0, video.height)) * video.width;
     trackColor = video.pixels[loc];
     print(red(trackColor) + " " + green(trackColor) + " " + blue(trackColor) + " ");
   }
   if(mouseButton == LEFT){
     // Mouse functionality for tree drawing
+    int randomX = (int) ( Math.random() * distance ) - distance/2;
+    int randomY = (int) ( Math.random() * distance ) - distance/2;
     float x = cam.getLookAt()[0] + cos(-y_rot)*(mouseX + randomX - width/2);
     float y = cam.getLookAt()[1] + mouseY + randomY - height/2;
     float z = cam.getLookAt()[2] + sin(-y_rot)*(mouseX + randomX - width/2);
@@ -188,15 +195,21 @@ void mouseDragged() {
 }
 
 void addBlobLeaves() {
-  int timeframe = 2;
+  int timeframe = 12;
   
   int randomX = (int) ( Math.random() * distance ) - distance/2;
   int randomY = (int) ( Math.random() * distance ) - distance/2;
   
   if( (int)( Math.random() * timeframe ) == 0 ) {
     for (Blob b : blobs) {
-      if (b.size() > 30)
-      tree.newLeaf(new PVector(b.get_center_x() + randomX, b.get_center_y() + randomY));
+      if (b.size() > 300) {
+        //tree.newLeaf(new PVector(b.get_center_x() + randomX, b.get_center_y() + randomY));
+        float x = cam.getLookAt()[0] + cos(-y_rot)*(b.get_center_x() + randomX - width/2);
+        float y = cam.getLookAt()[1] + b.get_center_y() + randomY - height/2;
+        float z = cam.getLookAt()[2] + sin(-y_rot)*(b.get_center_x() + randomX - width/2);
+        tree.newLeaf(new PVector(x, y, z));
+        // tree.newLeaf(new PVector(0, 0, 0));
+      }
     }
   }
 }

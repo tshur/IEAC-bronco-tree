@@ -65,7 +65,7 @@ class Leaf {
       //noStroke();
       //ellipse(pos.x, pos.y, radius / 2, radius / 2);
     
-    if( System.currentTimeMillis() - creationTime >= 5000 ) {  // NEW check for expiration after show
+    if( System.currentTimeMillis() - creationTime >= 2000 ) {  // NEW check for expiration after show
        shouldExpire = true; 
     }
   }
@@ -83,8 +83,8 @@ class Leaf {
       //noStroke();
       //ellipse(pos.x, pos.y, radius / 2, radius / 2);
     
-    if( System.currentTimeMillis() - creationTime >= 5000 ) {  // NEW check for expiration after show
-       //shouldExpire = true; 
+    if( System.currentTimeMillis() - creationTime >= 2000 ) {  // NEW check for expiration after show
+       shouldExpire = true; 
     }
   }
   

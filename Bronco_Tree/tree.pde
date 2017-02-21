@@ -17,7 +17,7 @@ class Tree {
     //              a trunk is extended from the bottom until it is within max_dist
     //              of any leaf (essentially, this moves within the vicinity of leaves)
 
-    for (int i = 0; i < 100; i++) {  // should be 2000 for OG Tree
+    for (int i = 0; i < 0; i++) {  // should be 2000 for OG Tree
       leaves.add(new Leaf());
     }
     
@@ -29,12 +29,16 @@ class Tree {
     branches.add(root);
     Branch current = new Branch(root);
 
-    // Extends the root upwards until the current branch is within max_dist of a leaf
-    while (!closeEnough(current)) {
-      Branch trunk = new Branch(current);
-      branches.add(trunk);
-      current = trunk;
+    for (int i = 0; i < 10; i++) {
+      leaves.add(new Leaf(new PVector(width/2, height + 5 - 15*i, 0))); 
     }
+
+    // Extends the root upwards until the current branch is within max_dist of a leaf
+    //while (!closeEnough(current)) {
+    //  Branch trunk = new Branch(current);
+    //  branches.add(trunk);
+    //  current = trunk;
+    //}
   }
 
   boolean closeEnough(Branch b) {
@@ -118,7 +122,7 @@ class Tree {
 
   void show() {
     for (Leaf l : leaves) { // display all leaves
-      //l.show3D(); // LEAF VISIBILITY
+      l.show3D(); // LEAF VISIBILITY
     }
     
     // update the radius of each branch; function implementation below

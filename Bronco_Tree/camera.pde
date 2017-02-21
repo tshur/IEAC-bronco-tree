@@ -34,7 +34,7 @@ Capture getCam(){
         // if the fps is faster than 20, select it as camera height&width!
         camWidth = Integer.parseInt(cameras[i].substring(q+5, r));
         camHeight = Integer.parseInt(cameras[i].substring(r+1, s));
-        if (camWidth == width)
+        if (camWidth == 320)
           break;
       }
       println(cameras[i]);

@@ -27,6 +27,7 @@ class Blob{
     strokeWeight(2);
     rectMode(CORNERS);
     rect(min_x, min_y, max_x, max_y);
+    rectMode(CENTER);
   }
   
   float size(){
